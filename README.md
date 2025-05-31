@@ -41,7 +41,6 @@ Flask API → ClusterIP Service
   ↓  
 PostgreSQL RDS (Private Subnet)  
 
-![EKS Cluster](screenshots/EKS%20cluster%20.png)
 
 > 🔐 **Networking Note**:  
 > The PostgreSQL RDS instance is hosted in **private subnets**, while the frontend LoadBalancer (ALB) and EKS control plane are exposed via **public subnets**. The node group spans both to allow secure app-to-db communication without direct exposure.
@@ -80,6 +79,18 @@ terraform apply
 ![](screenshots/TF-Apply-RDS.png)
 - ### Terraform Outputs
 ![](screenshots/tf%20apply%20with%20outputs.png)
+
+---
+
+## 🧾 Checking the AWS Console for EKS Node Creation
+
+After deploying the EKS infrastructure via Terraform, I verified the cluster and node group creation through the AWS Console.
+
+### EKS Cluster
+![EKS Cluster](screenshots/EKS%20cluster%20.png)
+
+### Nodes Running in Node Group
+![Nodes Running](screenshots/Nodes%20running%20in%20node%20group.png)
 
 ---
 
