@@ -70,11 +70,38 @@ terraform apply
 ```
 
 **Screenshots:**
-- ![](screenshots/TF%20init%20.png)
-- ![](screenshots/TF%20plan.png)
-- ![](screenshots/TF%20apply.png)
-- ![](screenshots/TF-Apply-RDS.png)
-- ![](screenshots/tf%20apply%20with%20outputs.png)
+- ### Terraform Init
+![](screenshots/TF%20init%20.png)
+- ### Terraform Plan
+![](screenshots/TF%20plan.png)
+- ### Terraform Apply
+![](screenshots/TF%20apply.png)
+- ### RDS Apply Output
+![](screenshots/TF-Apply-RDS.png)
+- ### Terraform Outputs
+![](screenshots/tf%20apply%20with%20outputs.png)
+
+---
+
+## 🛠️ Manual Console Adjustments
+
+While the majority of the infrastructure was provisioned using Terraform, a few manual steps were necessary within the AWS Console to ensure full application functionality:
+
+### 🔖 Tagged Public Subnets for ALB Discovery
+
+To allow the AWS Load Balancer Controller to provision ALBs correctly, I manually tagged the public subnets used by EKS with:
+
+`kubernetes.io/role/elb = 1`
+
+This tag is required for ALB resources to be placed correctly by the controller.
+
+### ❗ RDS Access Issue & Fix
+
+The Flask backend initially couldn’t connect to the PostgreSQL RDS instance. To resolve this, I modified the RDS security group to **allow inbound access on port 5432 from the EKS Node Group's security group**. This ensured secure, private communication between the Kubernetes pods and the RDS instance hosted in private subnets.
+
+> 📸 Screenshot:  
+> ### Testing RDS Connection from Pod
+![](screenshots/trying%20to%20connect%20to%20rds%20instance%20from%20eks%20pod.png)
 
 ---
 
@@ -85,12 +112,18 @@ terraform apply
 - Install ALB controller via Helm  
 
 Screenshots:  
-- ![](screenshots/Building%20kubeconfig%20and%20getting%20nodes%20in%20bash%20terminal%20.png)  
-- ![](screenshots/Nodes%20running%20in%20node%20group.png)  
-- ![](screenshots/created%20IAM%20Open%20ID%20Connect%20provider%20for%20cluster.png)  
-- ![](screenshots/Getting%20IAM%20policy%20for%20ALB%20controller.png)  
-- ![](screenshots/helm%20install.png)  
-- ![](screenshots/showing%20controller%20is%20deployed.png)
+- ### Build Kubeconfig & Check Nodes
+![](screenshots/Building%20kubeconfig%20and%20getting%20nodes%20in%20bash%20terminal%20.png)  
+- ### EKS Node Group Running
+![](screenshots/Nodes%20running%20in%20node%20group.png)  
+- ### IAM OIDC Provider
+![](screenshots/created%20IAM%20Open%20ID%20Connect%20provider%20for%20cluster.png)  
+- ### IAM Policy for ALB Controller
+![](screenshots/Getting%20IAM%20policy%20for%20ALB%20controller.png)  
+- ### Helm Install for ALB Controller
+![](screenshots/helm%20install.png)  
+- ### ALB Controller Deployed
+![](screenshots/showing%20controller%20is%20deployed.png)
 
 ---
 
@@ -108,25 +141,26 @@ Screenshots:
 Secrets are created using `kubectl create secret` and injected via `envFrom`. For production, AWS Secrets Manager is recommended.
 
 **Screenshots:**
-- ![](screenshots/Creating-DB-secrets.png)
-- ![](screenshots/editing%20the%20existing%20db%20secret%20via%20file.png)
-- ![](screenshots/applying-restarting-backend.png)
-- ![](screenshots/db%20table%20created%20.png)
-- ![](screenshots/Building-backend-image.png)
-- ![](screenshots/backend-tag-login-ecr.png)
-- ![](screenshots/backend-dockerpush.png)
-- ![](screenshots/testing%20local%20host%20incidents.png)
-- ![](screenshots/testing%20local%20host%20incidents%20pf.png)
-- ![](screenshots/seeing%20if%20localhost%20responds%20to%20curl%20.png)
-
----
-
-## ❗ RDS Access Issue & Fix
-
-The backend couldn’t connect to RDS initially. I fixed this by allowing port `5432` access **from the EKS node group security group**.
-
-> 📸 Screenshot:  
-> ![](screenshots/trying%20to%20connect%20to%20rds%20instance%20from%20eks%20pod.png)
+- ### Creating DB Secrets
+![](screenshots/Creating-DB-secrets.png)
+- ### Editing DB Secrets
+![](screenshots/editing%20the%20existing%20db%20secret%20via%20file.png)
+- ### Applying and Restarting Backend
+![](screenshots/applying-restarting-backend.png)
+- ### DB Table Created
+![](screenshots/db%20table%20created%20.png)
+- ### Building Backend Docker Image
+![](screenshots/Building-backend-image.png)
+- ### Tagging Backend Image for ECR
+![](screenshots/backend-tag-login-ecr.png)
+- ### Backend Docker Image Push
+![](screenshots/backend-dockerpush.png)
+- ### Localhost Incident Testing
+![](screenshots/testing%20local%20host%20incidents.png)
+- ### Port Forwarding Backend
+![](screenshots/testing%20local%20host%20incidents%20pf.png)
+- ### Testing Curl Connection to Backend
+![](screenshots/seeing%20if%20localhost%20responds%20to%20curl%20.png)
 
 ---
 
@@ -136,14 +170,22 @@ The backend couldn’t connect to RDS initially. I fixed this by allowing port `
 > - [`frontend-deployment.yaml`](k8s/frontend-deployment.yaml)
 
 **Screenshots:**
-- ![](screenshots/npm%20install.png)
-- ![](screenshots/npm%20build.png)
-- ![](screenshots/Building-frontend-image.png)
-- ![](screenshots/building%20frontend%20docker%20image.png)
-- ![](screenshots/frontend%20image%20tagged%20and%20pushed.png)
-- ![](screenshots/frontend%20running%20pods%20live.png)
-- ![](screenshots/kubernetes%20frontend%20deployment%20restarted%20.png)
-- ![](screenshots/tagging%20the%20alb%20to%20the%20pub%20subs.png)
+- ### NPM Install
+![](screenshots/npm%20install.png)
+- ### NPM Build
+![](screenshots/npm%20build.png)
+- ### Building Frontend Docker Image
+![](screenshots/Building-frontend-image.png)
+- ### Tagging Frontend Docker Image
+![](screenshots/building%20frontend%20docker%20image.png)
+- ### Frontend Image Pushed to ECR
+![](screenshots/frontend%20image%20tagged%20and%20pushed.png)
+- ### Frontend Pods Running
+![](screenshots/frontend%20running%20pods%20live.png)
+- ### Restarting Frontend Deployment
+![](screenshots/kubernetes%20frontend%20deployment%20restarted%20.png)
+- ### Tagging ALB to Subnets
+![](screenshots/tagging%20the%20alb%20to%20the%20pub%20subs.png)
 
 ---
 
@@ -156,8 +198,8 @@ The backend couldn’t connect to RDS initially. I fixed this by allowing port `
 5. Incident is returned & displayed
 
 **Screenshots:**
-- ![](screenshots/Logged%20incident%20with%20the%20http%20dns%20from%20alb%20.png)
-- ![](screenshots/Creating%20db%20in%20bash.png)
+- ### Live App – Incident Logged
+![](screenshots/logged-incident-final.png)
 
 ---
 
