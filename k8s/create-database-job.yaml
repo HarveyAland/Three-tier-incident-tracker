@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-major-incident-db
+spec:
+  template:
+    spec:
+      containers:
+      - name: psql
+        image: postgres:14
+        env:
+        - name: PGPASSWORD
+          value: "Password123"
+        command: ["sh", "-c"]
+        args:
+        - >
+          psql --host=major-incident-postgres.cfy8mecmuu65.eu-west-2.rds.amazonaws.com
+          --port=5432
+          --username=postgresadmin
+          --dbname=postgres
+          --command="CREATE DATABASE \"major-incident\";"
+      restartPolicy: OnFailure

@@ -1,0 +1,51 @@
+# -----------------------------------
+# Terraform
+# -----------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+*.hcl
+.terraform.lock.hcl
+
+# -----------------------------------
+# Python (Flask Backend)
+# -----------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+venv/
+env/
+
+# -----------------------------------
+# Node.js (React Frontend)
+# -----------------------------------
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.next/
+# Optional: exclude if too large, or keep if essential
+frontend/package-lock.json
+
+# -----------------------------------
+# System / Editor / OS files
+# -----------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# -----------------------------------
+# Temporary / Backup
+# -----------------------------------
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.yaml~  # backup temp files only
+
+*.json
+!package.json
+!frontend/package.json

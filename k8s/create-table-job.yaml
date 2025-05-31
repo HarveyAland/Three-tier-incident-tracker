@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-major-incidents-table
+spec:
+  template:
+    spec:
+      containers:
+      - name: psql
+        image: postgres:14
+        env:
+        - name: PGPASSWORD
+          value: "Password123"  
+        command: ["sh", "-c"]
+        args:
+        - >
+          psql --host=major-incident-postgres.cfy8mecmuu65.eu-west-2.rds.amazonaws.com
+          --port=5432
+          --username=postgresadmin
+          --dbname=major-incident
+          --command="CREATE TABLE IF NOT EXISTS major_incidents (
+            id SERIAL PRIMARY KEY,
+            service_name TEXT NOT NULL,
+            summary TEXT NOT NULL,
+            severity TEXT NOT NULL,
+            timestamp TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+          );"
+      restartPolicy: OnFailure
