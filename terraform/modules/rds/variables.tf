@@ -1,5 +1,5 @@
 variable "private_subnet_ids" {
-  type = list(string)
+ type = list(string)
 }
 
 variable "vpc_id" {}
