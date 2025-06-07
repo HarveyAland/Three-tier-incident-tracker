@@ -60,8 +60,8 @@ pipeline {
       steps {
         echo 'Updating EKS deployments with new images...'
         sh '''
-          kubectl set image deployment/backend-deployment backend=$BACKEND_IMAGE:latest
-          kubectl set image deployment/frontend-deployment frontend=$FRONTEND_IMAGE:latest
+          kubectl set image deployment/backend backend=$BACKEND_IMAGE:latest
+          kubectl set image deployment/frontend frontend=$FRONTEND_IMAGE:latest
         '''
       }
     }
