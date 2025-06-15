@@ -311,15 +311,178 @@ These checks work together to ensure that only healthy, responsive containers se
 
 ---
 
-## 🔭 Planned Improvements
+## Jenkins CI/CD Pipeline
 
-This project will integrate a Jenkins-based CI/CD pipeline to:
+### Overview of the Pipeline
 
-- Automatically build/push Docker images to ECR
-- Deploy to EKS using `kubectl` or Helm
-- Trigger deployments on push to `main` branch
+This section documents the Jenkins CI/CD pipeline used to automate the build, push, and deployment of the Major Incident Tracker application.
 
-> **Why it's important:** CI/CD is essential in production to ensure consistent, automated deployment with reduced human error.
+The pipeline is driven by the `Jenkinsfile` located in the root of the GitHub repository. It automates the following steps:
+
+- **Build backend and frontend Docker images** based on the application source code.  
+- **Push the images to AWS Elastic Container Registry (ECR)**.  
+- **Update the Kubernetes deployments** running in Amazon EKS using `kubectl set image`, triggering a rolling update of the pods.
+
+The goal is to provide a repeatable and automated way to deploy new application versions into the cluster with minimal manual intervention.
+
+---
+
+## EC2 Instance Setup and IAM Role
+
+A dedicated EC2 instance was provisioned to host Jenkins:
+
+- **Ubuntu 24.04 LTS**  
+- Security group allowing:  
+  - Port **22** for SSH  
+  - Port **8080** for Jenkins web interface  
+- An **IAM Role** was attached to the EC2 instance to allow:  
+  - Pushing/pulling Docker images to/from ECR  
+  - Interacting with EKS via `kubectl`
+
+### EC2 Security Group and Role Attached
+
+![EC2 Security Group and Role Attached](screenshots/jenkins-sg-role-attached.png)
+
+### EC2 Security Group Inbound Rules
+
+![EC2 Security Group Inbound Rules](screenshots/jenkins-sg.png)
+
+### IAM Role and Permissions Attached to Jenkins EC2
+
+![IAM Role and Permissions](screenshots/iam-jenkins-role-policy.png)
+
+---
+
+## Installing Required Packages on EC2 via SSH
+
+The following packages were installed on the Jenkins EC2 instance to support the pipeline operations:
+
+- **Installing Docker**  
+  ![Installing Docker](screenshots/install-docker-ecr-jenkins.png)
+
+- **Installing AWS CLI**  
+  ![Installing AWS CLI](screenshots/install-aws-cli-jenkins-ec2.png)
+
+- **Installing kubectl**  
+  ![Installing kubectl](screenshots/install-kubectl-jenkins-ec2.png)
+
+- **Installing Node.js and npm**  
+  ![Installing Node.js and npm](screenshots/install-js-npm-outputs.png)
+
+---
+
+## Enabling and Starting Jenkins
+
+![Enabling and Starting Jenkins](screenshots/jenkins-enabled-running-on-boot.png)
+
+## Verifying Jenkins is Running
+
+![Verifying Jenkins is Running](screenshots/jenkins-running-in-bash.png)
+
+---
+
+## Preparing the Application
+
+To simulate the application being live, I manually re-applied the Kubernetes deployment YAML files before testing the pipeline:
+
+```bash
+kubectl apply -f backend-deployment.yaml
+kubectl apply -f frontend-deployment.yaml
+```
+
+### Applying Kubernetes Deployment YAML Files
+
+![Applying Kubernetes YAMLs](screenshots/jenkins-redeploying-frontend-backend-yamls.png)
+
+---
+
+## Before Pipeline Run — Baseline Checks
+
+### Kubernetes Deployments and Pods Before Jenkins Build
+
+![Kubernetes Deployments and Pods Before](screenshots/backend-frontend-before-jenkins.png)
+
+---
+
+## Running the Jenkins Pipeline
+
+The Jenkins pipeline was configured to pull the code from GitHub and execute the stages defined in the `Jenkinsfile`. The screenshot bellow shows access credential secrets for AWS and Github.
+
+### Jenkins Pipeline Configuration — GitHub Credentials
+
+![Jenkins Pipeline GitHub Credentials](screenshots/jenkins-pipeline-git-creds.png)
+
+### Jenkins Global AWS & GitHub Credentials
+
+![Jenkins AWS Credentials](screenshots/Github-aws-keys.png)
+
+### Jenkins Pipeline Idle State Before Build
+
+![Jenkins Pipeline Idle Before Build](screenshots/jenkins-idle-pre-build-1.png)
+
+---
+
+## After Pipeline Run — Verifying Results
+
+### Jenkins Stages Success — Stages View
+
+![Jenkins Stages Success](screenshots/jenkins-stages-success.png)
+
+### Jenkins Pipeline Success — Console Log Output
+
+![Jenkins Pipeline Console Success](screenshots/jenkins-pipeline-success-console.png)
+
+---
+
+## After Pipeline Run — Post-Deployment Checks
+
+### Backend ECR After Jenkins
+
+![Backend ECR After Jenkins](screenshots/backend-ecr-after-cicd.png)
+
+### Frontend ECR After Jenkins
+
+![Frontend ECR After Jenkins](screenshots/frontend-ecr-after-cicd.png)
+
+### Kubernetes Deployments After Jenkins
+
+![Kubernetes Deployments After Jenkins](screenshots/jenkins-kube-deployments-after-cicd.png)
+
+### Kubernetes Pods After Jenkins
+
+![Kubernetes Pods After Jenkins](screenshots/pods-running-after-cicd.png)
+
+
+---
+
+## Handling Dummy Secrets for Backend Pod Startup
+
+Since the RDS instance was not live during this test, a dummy Kubernetes Secret was created to allow the backend pods to start correctly:
+
+### Creating Dummy Secret
+
+![Creating Dummy Secret](screenshots/creating-dummy-secret-cicd-test.png)
+
+---
+
+## Final Summary
+
+This Jenkins CI/CD pipeline successfully automated the build and deployment workflow for my Major Incident Tracker application:
+
+✅ Build backend and frontend Docker images  
+✅ Push images to ECR  
+✅ Update Kubernetes deployments in EKS  
+✅ Perform zero-downtime rolling updates of pods  
+✅ Fully automated pipeline flow — tested and validated  
+
+---
+
+## Key Benefits of this CI/CD Setup
+
+- Provides a **repeatable deployment process** integrated with GitHub source control.  
+- Uses **AWS native services** (ECR, EKS, IAM) securely.  
+- Demonstrates **infrastructure automation and CI/CD best practices**.  
+- Supports **rolling updates** with no manual redeployment of Kubernetes resources required.
 
 ---
 
