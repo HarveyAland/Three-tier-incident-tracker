@@ -15,6 +15,8 @@ This project is a production-style **3-tier web application** simulating a **Maj
 
 Infrastructure is provisioned with **Terraform**, workloads containerized with **Docker**, and deployed using **raw Kubernetes YAML** and **Helm** for the ALB controller. The app demonstrates real-world AWS experience including IAM, ALB integration, and secure service-to-database communication.
 
+A fully automated Jenkins CI/CD pipeline was configured on an EC2 instance to build, tag, and push Docker images to Amazon ECR, then roll out updates to EKS using `kubectl set image`. The pipeline validates that code pushes automatically trigger clean deployments across backend and frontend components.
+
 > ⚠️ **Note**: The React frontend was generated using AI-assisted tools. This allowed me to focus on infrastructure provisioning, backend development, Kubernetes deployments, and end-to-end system integration.
 ---
 
@@ -307,6 +309,7 @@ These checks work together to ensure that only healthy, responsive containers se
 - Used Terraform for AWS infra
 - Integrated Helm for ALB controller
 - Solved real-world RDS connectivity issues
+- Implemented Jenkins CI/CD pipeline for automated builds and deployments
 - Gained practical DevOps + Kubernetes experience
 
 ---
