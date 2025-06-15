@@ -35,7 +35,7 @@ Infrastructure is provisioned with **Terraform**, workloads containerized with *
 - [❤️ Health Checks & Load Balancing](#️-health-checks--load-balancing)
 - [📁 Project File Tree](#-project-file-tree)
 - [🧠 Key Takeaways](#-key-takeaways)
-- [🔭 Planned Improvements](#-planned-improvements)
+- [🔄 Jenkins CI/CD Pipeline](#-jenkins-cicd-pipeline)
 - [👨‍💻 Author](#-author)
 
 ---
@@ -311,7 +311,7 @@ These checks work together to ensure that only healthy, responsive containers se
 
 ---
 
-## Jenkins CI/CD Pipeline
+## 🔄 Jenkins CI/CD Pipeline
 
 ### Overview of the Pipeline
 
